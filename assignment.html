@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple CAD Paint Program</title>
+<style>
+canvas { border:1px solid black; }
+</style>
+</head>
+
+<body>
+
+<h3>CAD Paint Program</h3>
+
+Shape:
+<select id="shape">
+<option value="line">Line</option>
+<option value="rect">Rectangle</option>
+<option value="circle">Circle</option>
+<option value="triangle">Triangle</option>
+</select>
+
+Color:
+<input type="color" id="color" value="#ff0000">
+
+<br><br>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let startX, startY;
+let drawing = false;
+
+canvas.addEventListener("mousedown", (e)=>{
+    startX = e.offsetX;
+    startY = e.offsetY;
+    drawing = true;
+});
+
+canvas.addEventListener("mouseup", (e)=>{
+    if(!drawing) return;
+
+    let endX = e.offsetX;
+    let endY = e.offsetY;
+
+    let shape = document.getElementById("shape").value;
+    let color = document.getElementById("color").value;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+
+    if(shape === "line"){
+        ctx.beginPath();
+        ctx.moveTo(startX,startY);
+        ctx.lineTo(endX,endY);
+        ctx.stroke();
+    }
+
+    if(shape === "rect"){
+        ctx.strokeRect(startX,startY,endX-startX,endY-startY);
+    }
+
+    if(shape === "circle"){
+        let radius = Math.sqrt((endX-startX)**2 + (endY-startY)**2);
+        ctx.beginPath();
+        ctx.arc(startX,startY,radius,0,Math.PI*2);
+        ctx.stroke();
+    }
+
+    if(shape === "triangle"){
+        ctx.beginPath();
+        ctx.moveTo(startX,startY);
+        ctx.lineTo(endX,endY);
+        ctx.lineTo(startX,endY);
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+    drawing = false;
+});
+</script>
+
+</body>
+</html>
